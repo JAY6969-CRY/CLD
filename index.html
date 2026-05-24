@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #000;
+            color: #000;
+            height: 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #search-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+        #search-bar {
+            width: 300px;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background-color: #111;
+            color: #fff;
+            outline: none;
+        }
+        #search-bar::placeholder {
+            color: #666;
+        }
+        #message {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #333;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="search-container">
+        <input type="text" id="search-bar" placeholder="Search..." autocomplete="off">
+    </div>
+    <div id="message"></div>
+
+    <script>
+        let keySequence = '';
+        const secretKey = 'MVJCE';
+        let clickCount = 0;
+        let clickTimeout = null;
+        let isUnlocked = false;
+
+        document.addEventListener('keydown', function(e) {
+            if (!isUnlocked) {
+                keySequence += e.key.toUpperCase();
+                if (keySequence.length > secretKey.length) {
+                    keySequence = keySequence.slice(-secretKey.length);
+                }
+                if (keySequence === secretKey) {
+                    isUnlocked = true;
+                    document.getElementById('search-container').style.display = 'block';
+                    document.getElementById('search-bar').focus();
+                    keySequence = '';
+                }
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!isUnlocked) return;
+            
+            // Don't count clicks on the search bar
+            if (e.target.id === 'search-bar') return;
+            
+            clickCount++;
+            
+            if (clickTimeout) {
+                clearTimeout(clickTimeout);
+            }
+            
+            clickTimeout = setTimeout(function() {
+                if (clickCount >= 1 && clickCount <= 8) {
+                    downloadFile(clickCount);
+                }
+                clickCount = 0;
+            }, 500);
+        });
+
+        function downloadFile(num) {
+            const files = [
+                'a3f9c2d1.zip',
+                'b4e8f3a2.zip',
+                'c5d7e4b3.zip',
+                'd6c5f4c4.zip',
+                'e7b4a5d5.zip',
+                'f8a3b6e6.zip',
+                'g9a2c7f7.zip',
+                'h0b1d8g8.zip'
+            ];
+            const filename = files[num - 1];
+            const a = document.createElement('a');
+            a.href = filename;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            showMessage('Downloading...');
+        }
+
+        function showMessage(text) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.style.display = 'block';
+            setTimeout(function() {
+                msg.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
